@@ -5,6 +5,8 @@
     <title>A Song of Ice and Fire</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
   </head>
   <body>
     <div class="container">
@@ -19,26 +21,60 @@
       <div class="row">
         <div class="col">
           <h2> Alive! (for now)</h2>
-          <ul class="list-group">
-            <li class="list-group-item">Cras justo odio</li>
-            <li class="list-group-item">Dapibus ac facilisis in</li>
-            <li class="list-group-item">Morbi leo risus</li>
-            <li class="list-group-item">Porta ac consectetur ac</li>
-            <li class="list-group-item">Vestibulum at eros</li>
+          <ul id="characterSheetAlive" class="list-group">
+
           </ul>
         </div>
 
         <div class="col">
           <h2>Dead! (Got the Greyscale)</h2>
-          <ul class="list-group">
-            <li class="list-group-item">Cras justo odio</li>
-            <li class="list-group-item">Dapibus ac facilisis in</li>
-            <li class="list-group-item">Morbi leo risus</li>
-            <li class="list-group-item">Porta ac consectetur ac</li>
-            <li class="list-group-item">Vestibulum at eros</li>
+          <ul id="characterSheetDied" class="list-group">
+
           </ul>
         </div>
       </div>
     </div>
+    <script type="text/javascript">
+    const urlAlive = "https://www.anapioficeandfire.com/api/characters?isAlive=true"
+    let listAlive = document.getElementById("characterSheetAlive");
+
+    axios(urlAlive).then(response => {
+        let charactersAlive = response.data
+        for(chatacterAlive of charactersAlive){
+        listAlive.insertAdjacentHTML('beforeend', `<li class="list-group-item">${chatacterAlive.aliases}</li>`)
+      }
+    });
+
+    const urlDied = "https://www.anapioficeandfire.com/api/characters?isAlive=false"
+    let listDied = document.getElementById("characterSheetDied");
+
+    function responseData (url, list, type) {
+     axios(urlDied).then(response => {
+     const charactersDied = response.data
+     for(const characterDied of charactersDied){
+      if(type !== 'b' || characterDied.aliases.length > 1){
+        listDied.insertAdjacentHTML('beforeend', `<li class="list-group-item list-group-item-action disabled">${characterDied.aliases}</li>`)
+      }else{
+        listDied.insertAdjacentHTML('beforeend', `<li class="list-group-item list-group-item-action disabled">${characterDied.name}</li>`)
+      }
+    }
+  })
+};
+responseData(urlDied, listDied, 'b');
+
+    // axios(urlDied).then(response => {
+    //     let charactersDied = response.data
+    //     for(let chatacterDied of charactersDied){
+    //         if(charactersDied.aliases){
+    //           listDied.insertAdjacentHTML('beforeend', `<li class="list-group-item list-group-item-action disabled">${characterDied.aliases}</li>`)
+    //         }else{
+    //           listDied.insertAdjacentHTML('beforeend', `<li class="list-group-item list-group-item-action disabled">${characterDied.name}</li>`)
+    //         }
+    //   }
+    // });
+
+
+
+    </script>
   </body>
 </html>
